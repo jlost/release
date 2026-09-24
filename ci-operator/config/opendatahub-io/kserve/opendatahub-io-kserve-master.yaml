@@ -117,6 +117,23 @@ resources:
       cpu: 100m
       memory: 200Mi
 tests:
+- always_run: true
+  as: test-selector-shadow
+  optional: true
+  steps:
+    test:
+    - as: evaluate
+      commands: |-
+        python -m test_selector.gatekeeper.evaluate \
+          --shared-dir "${ARTIFACT_DIR}" \
+          --artifact-dir "${ARTIFACT_DIR}"
+        cat "${ARTIFACT_DIR}/selection.json"
+      from: test-selector-gatekeeper-stable
+      resources:
+        requests:
+          cpu: 500m
+          memory: 2Gi
+      timeout: 15m0s
 - as: test-selector-unit
   run_if_changed: ^tools/test_selector/
   steps:
